@@ -75,13 +75,13 @@ void HandTracker::findHands(const cv::Mat& mask, cv::Mat& drawing) {
         if (hull_indices.size() > 3) {
             try {
                 cv::convexityDefects(contours[largestContourIndex], hull_indices, defects);
-            } catch (cv::Exception& e) {
+            } catch (const cv::Exception&) {
                 // Sometimes defects calculation fails if hull is self-intersecting or too simple
             }
 
             int fingerCount = 0;
             for (const auto& v : defects) {
-                float depth = (float)v[3] / 256.0;
+                float depth = (float)v[3] / 256.0f;
                 if (depth > 20) { // Filter shallow defects (not fingers spacing)
                     int startidx = v[0]; 
                     int endidx = v[1];

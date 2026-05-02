@@ -24,12 +24,18 @@ int main() {
     cv::namedWindow("Settings", cv::WINDOW_AUTOSIZE);
 
     // Create trackbars for HSV calibration
-    cv::createTrackbar("H Min", "Settings", &tracker.getHMin(), 180);
-    cv::createTrackbar("H Max", "Settings", &tracker.getHMax(), 180);
-    cv::createTrackbar("S Min", "Settings", &tracker.getSMin(), 255);
-    cv::createTrackbar("S Max", "Settings", &tracker.getSMax(), 255);
-    cv::createTrackbar("V Min", "Settings", &tracker.getVMin(), 255);
-    cv::createTrackbar("V Max", "Settings", &tracker.getVMax(), 255);
+    cv::createTrackbar("H Min", "Settings", nullptr, 180);
+    cv::setTrackbarPos("H Min", "Settings", tracker.getHMin());
+    cv::createTrackbar("H Max", "Settings", nullptr, 180);
+    cv::setTrackbarPos("H Max", "Settings", tracker.getHMax());
+    cv::createTrackbar("S Min", "Settings", nullptr, 255);
+    cv::setTrackbarPos("S Min", "Settings", tracker.getSMin());
+    cv::createTrackbar("S Max", "Settings", nullptr, 255);
+    cv::setTrackbarPos("S Max", "Settings", tracker.getSMax());
+    cv::createTrackbar("V Min", "Settings", nullptr, 255);
+    cv::setTrackbarPos("V Min", "Settings", tracker.getVMin());
+    cv::createTrackbar("V Max", "Settings", nullptr, 255);
+    cv::setTrackbarPos("V Max", "Settings", tracker.getVMax());
 
     cap.start();
 
@@ -45,6 +51,16 @@ int main() {
 
     while (true) {
         if (cap.getFrame(frame)) {
+            // Update tracker HSV values from trackbars
+            tracker.updateHSV(
+                cv::getTrackbarPos("H Min", "Settings"),
+                cv::getTrackbarPos("H Max", "Settings"),
+                cv::getTrackbarPos("S Min", "Settings"),
+                cv::getTrackbarPos("S Max", "Settings"),
+                cv::getTrackbarPos("V Min", "Settings"),
+                cv::getTrackbarPos("V Max", "Settings")
+            );
+
             // Processing
             tracker.process(frame, processed);
 
